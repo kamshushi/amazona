@@ -5,6 +5,7 @@ import NextLink from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import axios from 'axios';
+import { useRouter } from 'next/dist/client/router';
 // MUI
 import {
   Grid,
@@ -25,6 +26,7 @@ import {
 } from '@material-ui/core';
 
 function CartScreen() {
+  const router = useRouter();
   const { state, dispatch } = useContext(Store);
   const {
     cart: { cartItems },
@@ -33,11 +35,19 @@ function CartScreen() {
   // Updates quantity of an item in the cart from the Select menu
   const updateCartHandler = async (item, quantity) => {
     const { data } = await axios.get(`/api/products/${item._id}`);
-    if (data.countInStock <= 0) {
+    if (data.countInStock < quantity) {
       window.alert('Sorry, Product is out of stock');
       return;
     }
-    dispatch({ type: 'CART_ADD_ITEM', payload: { ...item, quantity } });
+    dispatch({ type: 'ADD_CART_ITEM', payload: { ...item, quantity } });
+  };
+  // Delete item from cart
+  const removeItem = async (item) => {
+    dispatch({ type: 'REMOVE_CART_ITEM', payload: item });
+  };
+  // Checkout handler
+  const checkoutHandler = () => {
+    router.push('/shipping');
   };
   return (
     <Layout title="Shopping Cart">
@@ -46,7 +56,10 @@ function CartScreen() {
       </Typography>
       {cartItems.length === 0 ? (
         <div>
-          Cart is empty. <NextLink href="/">Go shopping</NextLink>
+          Cart is empty.{' '}
+          <NextLink href="/" passHref>
+            <Link>Go shopping</Link>
+          </NextLink>
         </div>
       ) : (
         <Grid container spacing={1}>
@@ -101,7 +114,11 @@ function CartScreen() {
                       </TableCell>
                       <TableCell align="right">${item.price}</TableCell>
                       <TableCell align="right">
-                        <Button variant="contained" color="secondary">
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          onClick={() => removeItem(item)}
+                        >
                           x
                         </Button>
                       </TableCell>
@@ -122,7 +139,12 @@ function CartScreen() {
                   </Typography>
                 </ListItem>
                 <ListItem>
-                  <Button variant="contained" color="primary" fullWidth>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    onClick={checkoutHandler}
+                  >
                     Check Out
                   </Button>
                 </ListItem>

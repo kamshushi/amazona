@@ -33,13 +33,22 @@ const productScreen = (props) => {
   }
 
   // Add to cart handler
-  const addToCartHandler = async () => {
+  const addToCart = async () => {
+    const existingItem = state.cart.cartItems.find(
+      (item) => item._id === product._id
+    );
+    const UpdatedQuantity = existingItem ? existingItem.quantity + 1 : 1;
+
+    // alert if the new quantity is larger than the quantity in stock
     const { data } = await axios.get(`/api/products/${product._id}`);
-    if (data.countInStock <= 0) {
+    if (data.countInStock < UpdatedQuantity) {
       window.alert('Sorry. Product is out of stock');
       return;
     }
-    dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity: 1 } });
+    dispatch({
+      type: 'ADD_CART_ITEM',
+      payload: { ...product, quantity: UpdatedQuantity },
+    });
     router.push('/cart');
   };
   return (
@@ -115,7 +124,7 @@ const productScreen = (props) => {
                   fullWidth
                   variant="contained"
                   color="primary"
-                  onClick={addToCartHandler}
+                  onClick={addToCart}
                 >
                   Add to cart
                 </Button>

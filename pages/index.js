@@ -1,6 +1,9 @@
 import Layout from '../components/Layout';
-import data from '../utils/data';
 import NextLink from 'next/link';
+import { useRouter } from 'next/dist/client/router';
+import { useContext } from 'react';
+import { Store } from '../utils/Store';
+import axios from 'axios';
 // MUI
 import {
   Card,
@@ -18,6 +21,27 @@ import Product from '../models/Product';
 
 export default function Home(props) {
   const { products } = props;
+  const router = useRouter();
+  const { state, dispatch } = useContext(Store);
+
+  // Add product to cart directly from home page
+  const addToCart = async (product) => {
+    const existingItem = state.cart.cartItems.find(
+      (item) => item._id === product._id
+    );
+    const UpdatedQuantity = existingItem ? existingItem.quantity + 1 : 1;
+    // alert if the new quantity is larger than the quantity in stock
+    const { data } = await axios.get(`/api/products/${product._id}`);
+    if (data.countInStock < UpdatedQuantity) {
+      window.alert('Sorry. Product is out of stock');
+      return;
+    }
+    dispatch({
+      type: 'ADD_CART_ITEM',
+      payload: { ...product, quantity: UpdatedQuantity },
+    });
+    router.push('/cart');
+  };
   return (
     <Layout>
       <div>
@@ -40,7 +64,11 @@ export default function Home(props) {
                 </NextLink>
                 <CardActions>
                   <Typography>${product.price}</Typography>
-                  <Button size="small" color="primary">
+                  <Button
+                    size="small"
+                    color="primary"
+                    onClick={() => addToCart(product)}
+                  >
                     Add to card
                   </Button>
                 </CardActions>
