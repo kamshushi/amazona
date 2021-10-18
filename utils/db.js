@@ -1,8 +1,8 @@
-import mongoose, { connections } from 'mongoose';
+import mongoose from 'mongoose';
 
 const connection = {};
 
-const connect = async () => {
+async function connect() {
   if (connection.isConnected) {
     console.log('already connected');
     return;
@@ -18,7 +18,7 @@ const connect = async () => {
   const db = await mongoose.connect(process.env.MONGODB_URI);
   console.log('new connection');
   connection.isConnected = db.connections[0].readyState;
-};
+}
 
 async function disconnect() {
   if (connection.isConnected) {
@@ -31,5 +31,13 @@ async function disconnect() {
   }
 }
 
-const db = { connect, disconnect };
+// convert mongoose document to javascript Object, by converting datatypes to string , so all data types from the doc are Number or String or bool
+const convertDocToObject = (doc) => {
+  doc._id = doc._id.toString();
+  doc.createdAt = doc.createdAt.toString();
+  doc.updatedAt = doc.updatedAt.toString();
+  return doc;
+};
+
+const db = { connect, disconnect, convertDocToObject };
 export default db;
