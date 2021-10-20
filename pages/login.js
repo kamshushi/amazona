@@ -1,8 +1,11 @@
 import axios from 'axios';
 import NextLink from 'next/link';
-import React, { useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Layout from '../components/Layout';
+import { Store } from '../utils/Store';
 import useStyles from '../utils/styles';
+import { useRouter } from 'next/dist/client/router';
+import Cookies from 'js-cookie';
 // MUI
 import {
   List,
@@ -14,7 +17,17 @@ import {
 } from '@material-ui/core';
 
 export default function Login() {
+  const { state, dispatch } = useContext(Store);
+  const { userInfo } = state;
   const classes = useStyles();
+  const router = useRouter();
+  const { redirect } = router.query; // login?redirect=/shipping
+  // If we have user data , redirect to homepage
+  useEffect(() => {
+    if (userInfo) {
+      router.push('/');
+    }
+  }, []);
 
   // form state
   const [email, setEmail] = useState('');
@@ -28,8 +41,9 @@ export default function Login() {
         email,
         password,
       });
-      console.log(data);
-      alert('success login');
+      dispatch({ type: 'USER_LOGIN', payload: data });
+      Cookies.set('userInfo', JSON.stringify(data));
+      router.push(redirect || '/');
     } catch (err) {
       alert(err.response.data ? err.response.data.message : err.message);
     }
