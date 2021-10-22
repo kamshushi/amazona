@@ -34,9 +34,8 @@ const useStyles = makeStyles({
     color: '#fff',
     textTransform: 'initial',
   },
-  checkoutWizard: {
-    backgroundColor: '#fafafa',
-    marginTop: 30,
+  transparentBackground: {
+    backgroundColor: 'transparent',
   },
 });
 

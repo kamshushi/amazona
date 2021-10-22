@@ -8,7 +8,7 @@ const CheckoutWizard = ({ activeStep = 0 }) => {
     <Stepper
       activeStep={activeStep}
       alternativeLabel
-      className={classes.checkoutWizard}
+      className={classes.transparentBackground}
     >
       {['Login', 'Shipping Address', 'Payment Method', 'Place Order'].map(
         (step) => (
