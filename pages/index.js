@@ -1,7 +1,7 @@
 import Layout from '../components/Layout';
 import NextLink from 'next/link';
 import { useRouter } from 'next/dist/client/router';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Store } from '../utils/Store';
 import axios from 'axios';
 // MUI
@@ -22,6 +22,7 @@ import Product from '../models/Product';
 export default function Home(props) {
   const { products } = props;
   const router = useRouter();
+  const { reload } = router.query;
   const { state, dispatch } = useContext(Store);
 
   // Add product to cart directly from home page
@@ -42,6 +43,7 @@ export default function Home(props) {
     });
     router.push('/cart');
   };
+
   return (
     <Layout>
       <div>

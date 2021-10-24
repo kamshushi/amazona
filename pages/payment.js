@@ -25,12 +25,15 @@ const Payment = () => {
   const { state, dispatch } = useContext(Store);
   const {
     cart: { shippingAddress },
+    userInfo,
   } = state;
   const [paymentMethod, setPaymentMethod] = useState('');
 
   // redirect to /shipping if no shipping address, else setPayment from cookies
   useEffect(() => {
-    if (!shippingAddress.address) {
+    if (!userInfo) {
+      router.push('/login?redirect=/shipping');
+    } else if (!shippingAddress.address) {
       router.push('/shipping');
     } else {
       setPaymentMethod(Cookies.get('paymentMethod') || '');
