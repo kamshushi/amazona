@@ -50,13 +50,14 @@ function PlaceOrder() {
   useEffect(() => {
     if (!userInfo) {
       router.push('/login?redirect=/shipping');
-    } else if (!paymentMethod) {
+    }
+    if (!paymentMethod) {
       router.push('/payment');
     }
+    if (cartItems.length === 0) {
+      router.push('/cart');
+    }
   }, []);
-
-  //   Avoids error when logging out from Place Order page
-  if (!shippingAddress) return <h1>Loading...</h1>;
 
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
@@ -81,7 +82,7 @@ function PlaceOrder() {
           },
         }
       );
-      dispatch({ type: 'CART_CLEAR' });
+      dispatch({ type: 'CLEAR_CART' });
       Cookies.remove('cartItems');
       setLoading(false);
       router.push(`/order/${data._id}`);

@@ -28,10 +28,6 @@ export default function Shipping() {
     cart: { shippingAddress },
   } = state;
 
-  console.log(shippingAddress);
-  //   Avoids error when logging out from Place Order page
-  if (!shippingAddress) return <h1>Loading...</h1>;
-
   useEffect(() => {
     if (!userInfo) {
       router.push('/login?redirect=/shipping');

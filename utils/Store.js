@@ -67,6 +67,15 @@ const reducer = (state, action) => {
         },
       };
     }
+    case 'CLEAR_CART': {
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          cartItems: [],
+        },
+      };
+    }
     case 'SAVE_SHIPPING_ADDRESS': {
       return {
         ...state,
@@ -89,7 +98,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         userInfo: null,
-        cart: { cartItems: [] },
+        cart: { cartItems: [], shippingAddress: {}, paymentMethod: '' },
       };
     }
     default:

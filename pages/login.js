@@ -51,6 +51,7 @@ export default function Login() {
         email,
         password,
       });
+      console.log(data);
       dispatch({ type: 'USER_LOGIN', payload: data });
       Cookies.set('userInfo', JSON.stringify(data));
       router.push(redirect || '/');
