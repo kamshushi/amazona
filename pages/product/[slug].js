@@ -20,7 +20,7 @@ import {
 import db from '../../utils/db';
 import Product from '../../models/Product';
 
-const productScreen = (props) => {
+const ProductScreen = (props) => {
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
   const classes = useStyles();
@@ -137,7 +137,7 @@ const productScreen = (props) => {
   );
 };
 
-export default productScreen;
+export default ProductScreen;
 
 export const getServerSideProps = async (context) => {
   const { params } = context;
